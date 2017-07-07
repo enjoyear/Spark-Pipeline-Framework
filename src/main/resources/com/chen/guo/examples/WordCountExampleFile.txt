@@ -1,0 +1,2 @@
+This is a text file and this file serves as the input file for the word count example at com/chen/guo/examples/WordCount.
+END OF THIS FILE.
