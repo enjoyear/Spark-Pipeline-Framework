@@ -10,11 +10,16 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    compile 'org.scala-lang:scala-library:2.11.11'
+ext.versions = [
+        scalaMajorMinorVersion: '2.11',
+        sparkVersion          : '2.1.1'
+]
 
-    compile group: 'org.apache.spark', name: 'spark-core_2.11', version: '2.1.1'
-    compile group: 'org.apache.spark', name: 'spark-sql_2.11', version: '2.1.1'
+dependencies {
+    compile 'org.scala-lang:scala-library:' + versions.scalaMajorMinorVersion + '.11'
+
+    compile 'org.apache.spark:spark-core_' + versions.scalaMajorMinorVersion + ':' + versions.sparkVersion
+    compile 'org.apache.spark:spark-sql_' + versions.scalaMajorMinorVersion + ':' + versions.sparkVersion
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
