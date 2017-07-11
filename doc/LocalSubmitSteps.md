@@ -6,8 +6,8 @@
 
   ```bash
   spark-submit --class com.chen.guo.example.WordCount \
---conf spark.chen.guo.word.count.filepath=file:///Users/chguo/repos/enjoyear/Spark-Pipeline-Framework/src/main/resources/com/chen/guo/example/WordCountExampleFile.txt \
-file:///Users/chguo/repos/enjoyear/Spark-Pipeline-Framework/build/libs/spark-pipeline-framework-1.0-SNAPSHOT.jar
+--conf spark.chen.guo.word.count.filepath=file:///Users/chguo/repos/enjoyear/Spark-Pipeline-Framework/spark-ingestion/src/main/resources/com/chen/guo/example/WordCountExampleFile.txt \
+file:///Users/chguo/repos/enjoyear/Spark-Pipeline-Framework/spark-ingestion/build/libs/spark-ingestion.jar
   ```
 3. 
 
