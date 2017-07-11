@@ -1,0 +1,9 @@
+apply plugin: 'scala'
+
+dependencies {
+    compile 'org.scala-lang:scala-library:' + versions.scalaMajorMinorVersion + '.11'
+
+    compile 'org.apache.spark:spark-core_' + versions.scalaMajorMinorVersion + ':' + versions.sparkVersion
+    compile 'org.apache.spark:spark-sql_' + versions.scalaMajorMinorVersion + ':' + versions.sparkVersion
+
+}

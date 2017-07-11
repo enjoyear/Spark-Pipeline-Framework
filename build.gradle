@@ -1,11 +1,6 @@
 group 'com.chen.guo'
 version '1.0-SNAPSHOT'
 
-apply plugin: 'java'
-apply plugin: 'scala'
-
-sourceCompatibility = 1.8
-
 buildscript {
     repositories {
         maven {
@@ -17,22 +12,23 @@ buildscript {
     }
 }
 
-apply plugin: "com.github.johnrengelman.shadow"
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: "com.github.johnrengelman.shadow"
 
-repositories {
-    mavenCentral()
-}
+    sourceCompatibility = 1.8
 
-ext.versions = [
-        scalaMajorMinorVersion: '2.11',
-        sparkVersion          : '2.1.1'
-]
+    repositories {
+        mavenCentral()
+    }
 
-dependencies {
-    compile 'org.scala-lang:scala-library:' + versions.scalaMajorMinorVersion + '.11'
+    ext.versions = [
+            scalaMajorMinorVersion: '2.11',
+            sparkVersion          : '2.1.1'
+    ]
 
-    compile 'org.apache.spark:spark-core_' + versions.scalaMajorMinorVersion + ':' + versions.sparkVersion
-    compile 'org.apache.spark:spark-sql_' + versions.scalaMajorMinorVersion + ':' + versions.sparkVersion
-
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
 }
