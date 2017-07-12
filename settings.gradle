@@ -1,4 +1,5 @@
 rootProject.name = 'spark-pipeline-framework'
 
-include 'spark-common'
-include 'spark-ingestion'
+include 'spf-common'
+include 'spf-runtime'
+include 'spf-ingestion'
