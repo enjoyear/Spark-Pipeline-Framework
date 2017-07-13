@@ -1,4 +1,4 @@
-package com.chen.guo.core
+package com.guochen.spf.core
 
 import com.typesafe.config.Config
 import org.apache.spark.SparkContext

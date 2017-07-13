@@ -1,4 +1,4 @@
-group 'com.chen.guo'
+group 'com.guochen'
 version '1.0-SNAPSHOT'
 
 buildscript {

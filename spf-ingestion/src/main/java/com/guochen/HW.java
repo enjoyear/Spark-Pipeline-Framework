@@ -1,4 +1,4 @@
-package com.chen.guo;
+package com.guochen;
 
 public class HW {
   public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package com.chen.guo.example
+package com.guochen.spf.ingestion.example
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
