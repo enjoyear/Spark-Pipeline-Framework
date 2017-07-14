@@ -12,10 +12,10 @@ sealed trait SparkJobValidation {
 
 case object SparkJobValid extends SparkJobValidation
 
-case class SparkJobInvalid(reason: String) extends SparkJobValidation
+case class SparkJobInvalid(msg: String) extends SparkJobValidation
 
-trait SparkJob {
-  def runJob(sc: SparkContext, jobConfig: Config): Any
+abstract class SparkJob(config: Config) {
+  def validate(sc: SparkContext): SparkJobValidation
 
-  def validate(sc: SparkContext, config: Config): SparkJobValidation
+  def run(sc: SparkContext): Any
 }

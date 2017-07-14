@@ -5,10 +5,10 @@ import com.typesafe.config.Config
 import org.apache.spark.SparkContext
 
 
-class FileIngestionJob(conf: Config) extends SparkJob {
-  override def runJob(sc: SparkContext, jobConfig: Config): Any = {
-    println(conf.getString("Hi"))
-  }
+class FileIngestionJob(config: Config) extends SparkJob(config) {
+  override def validate(sc: SparkContext): SparkJobValidation = SparkJobValid
 
-  override def validate(sc: SparkContext, config: Config): SparkJobValidation = SparkJobValid
+  override def run(sc: SparkContext): Any = {
+    println(config.getString("Hi"))
+  }
 }
