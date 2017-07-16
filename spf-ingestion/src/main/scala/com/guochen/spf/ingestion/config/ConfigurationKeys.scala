@@ -2,7 +2,7 @@ package com.guochen.spf.ingestion.config
 
 object ConfigurationKeys {
   val SOURCE_ROOT = "source"
-  val INPUT_FILE = "file_url"
+  val SOURCE = ConfigurationKeysSource
 
   val CONVERTER_ROOT = "converter"
 
@@ -11,6 +11,13 @@ object ConfigurationKeys {
 
 
   val PUBLISHER_ROOT = "publisher"
+  val PUBLISHER = ConfigurationKeysPublisher
+}
 
+object ConfigurationKeysSource {
+  val LOCATION = "location"
+}
 
+object ConfigurationKeysPublisher {
+  val LOCATION = "location"
 }

@@ -7,16 +7,17 @@ import org.apache.spark.SparkContext
 
 
 class FileIngestionJob(config: Config) extends SparkJob(config) {
-  val source = config.getConfig(ConfigurationKeys.SOURCE_ROOT)
-  val converter = config.getConfig(ConfigurationKeys.CONVERTER_ROOT)
-  val checker = config.getConfig(ConfigurationKeys.CHECKER_ROOT)
-  val publisher = config.getConfig(ConfigurationKeys.PUBLISHER_ROOT)
+  private val source = config.getConfig(ConfigurationKeys.SOURCE_ROOT)
+  private val converter = config.getConfig(ConfigurationKeys.CONVERTER_ROOT)
+  private val checker = config.getConfig(ConfigurationKeys.CHECKER_ROOT)
+  private val publisher = config.getConfig(ConfigurationKeys.PUBLISHER_ROOT)
 
   override def validate(sc: SparkContext): SparkJobValidation = SparkJobValid
 
   override def run(sc: SparkContext): Any = {
-    val filePath = source.getString(ConfigurationKeys.INPUT_FILE)
+    val filePath = source.getString(ConfigurationKeys.SOURCE.LOCATION)
     val fileRdd = sc.textFile(filePath)
     fileRdd.foreach(println)
+    fileRdd.saveAsTextFile(publisher.getString(ConfigurationKeys.PUBLISHER.LOCATION))
   }
 }
