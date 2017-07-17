@@ -3,7 +3,8 @@ package com.guochen.spf.ingestion.job
 import com.guochen.spf.core.{SparkJob, SparkJobValid, SparkJobValidation}
 import com.guochen.spf.ingestion.config.ConfigurationKeys
 import com.typesafe.config.Config
-import org.apache.spark.SparkContext
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
 
 
 class FileIngestionJob(config: Config) extends SparkJob(config) {
@@ -12,12 +13,21 @@ class FileIngestionJob(config: Config) extends SparkJob(config) {
   private val checker = config.getConfig(ConfigurationKeys.CHECKER_ROOT)
   private val publisher = config.getConfig(ConfigurationKeys.PUBLISHER_ROOT)
 
-  override def validate(sc: SparkContext): SparkJobValidation = SparkJobValid
+  override def validate(ss: SparkSession): SparkJobValidation = SparkJobValid
 
-  override def run(sc: SparkContext): Any = {
+  def getSchema(): StructType = StructType(
+    Seq(
+      StructField(name = "name", dataType = StringType, nullable = false),
+      StructField(name = "age", dataType = IntegerType, nullable = false))
+  )
+
+  override def run(ss: SparkSession): Any = {
     val filePath = source.getString(ConfigurationKeys.SOURCE.LOCATION)
-    val fileRdd = sc.textFile(filePath)
-    fileRdd.foreach(println)
-    fileRdd.saveAsTextFile(publisher.getString(ConfigurationKeys.PUBLISHER.LOCATION))
+    val fileRdd = ss.sparkContext.textFile(filePath)
+    val dataFrame = ss.read.csv(filePath)
+    dataFrame.write
+      .format(publisher.getString(ConfigurationKeys.PUBLISHER.FORMAT))
+      .mode(publisher.getString(ConfigurationKeys.PUBLISHER.MODE))
+      .save(publisher.getString(ConfigurationKeys.PUBLISHER.LOCATION))
   }
 }

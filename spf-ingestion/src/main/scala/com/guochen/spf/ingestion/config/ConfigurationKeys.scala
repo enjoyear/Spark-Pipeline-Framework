@@ -20,4 +20,6 @@ object ConfigurationKeysSource {
 
 object ConfigurationKeysPublisher {
   val LOCATION = "location"
+  val FORMAT = "format"
+  val MODE = "mode"
 }

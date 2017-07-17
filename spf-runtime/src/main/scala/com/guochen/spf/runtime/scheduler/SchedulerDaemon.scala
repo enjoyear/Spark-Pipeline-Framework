@@ -13,7 +13,7 @@ object SchedulerDaemon extends App {
   //  private val config = ConfigFactory.parseFile(new File(getClass.getResource("file-ingestion.conf").getFile))
   private val config = ConfigFactory.parseFile(new File("/Users/chguo/repos/enjoyear/Spark-Pipeline-Framework/examples/ingestion/simple/file-ingestion.conf"))
 
-  start(args, setupSpark().sparkContext)
+  start(args, setupSpark())
   //start(args, null)
 
   def setupSpark(): SparkSession = {
@@ -31,7 +31,7 @@ object SchedulerDaemon extends App {
     sessionBuilder.getOrCreate()
   }
 
-  def start(args: Array[String], sparkContext: SparkContext) {
+  def start(args: Array[String], sparkContext: SparkSession) {
     val jobConfig = config.getConfig(ConfigurationKeys.JOB_ROOT)
     val jobClassName = jobConfig.getString(ConfigurationKeys.KEY_JOB_CLASS)
     val jobClass = Class.forName(jobClassName)
