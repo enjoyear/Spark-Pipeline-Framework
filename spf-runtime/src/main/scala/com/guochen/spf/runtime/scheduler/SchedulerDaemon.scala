@@ -23,7 +23,9 @@ object SchedulerDaemon extends App {
       .builder()
       .master(clusterConfig.getString(ConfigurationKeys.KEY_SPARK_MASTER))
       .appName(clusterConfig.getString(ConfigurationKeys.KEY_SPARK_APP_NAME))
-      .enableHiveSupport()
+
+    if (clusterConfig.getBoolean(ConfigurationKeys.ENABLE_HIVE_SUPPORT))
+      sessionBuilder.enableHiveSupport()
 
     val sparkConfig = config.getConfig(ConfigurationKeys.SPARK_CONFIG).entrySet()
     sparkConfig.asScala.foreach(entry => {

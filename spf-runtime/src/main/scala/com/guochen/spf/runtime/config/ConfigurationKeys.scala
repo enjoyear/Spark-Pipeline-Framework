@@ -8,8 +8,9 @@ object ConfigurationKeys {
   val KEY_SPARK_MASTER = "master"
   val KEY_SPARK_APP_NAME = "app_name"
 
-  //SPARK SPECIFIC
+  //SPARK CONFIG SPECIFIC
   val SPARK_CONFIG = s"$ROOT.spark.config"
+  val ENABLE_HIVE_SUPPORT = "enable_hive_support"
 
   //JOB SPECIFIC
   val JOB_ROOT = s"$ROOT.job"
