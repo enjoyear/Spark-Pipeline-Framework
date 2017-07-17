@@ -4,5 +4,11 @@ build
 *.iml
 *.ipr
 *.iws
+
 output
 bin/jars
+
+#Hive Related
+metastore_db
+derby.log
+#Hive Related
