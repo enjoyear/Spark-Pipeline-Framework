@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 SPF_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
-${SPF_DIR}/gradlew -q :dependencyInsight --dependency scala --configuration zinc
+${SPF_DIR}/gradlew properties
 
-#e.g.
-#./gradlew :spf-runtime:dependencies | grep -v '|    |    |'
-#./gradlew :spf-runtime:dependencyInsight --configuration testCompile --dependency scala
 
 #References:
 #https://docs.gradle.org/3.3/userguide/scala_plugin.html

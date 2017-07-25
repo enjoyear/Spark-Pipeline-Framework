@@ -2,4 +2,5 @@ apply plugin: 'scala'
 
 dependencies {
     compile project(':spf-ingestion')
+    testCompile project(path: ':spf-core', configuration: 'testArtifacts')
 }
