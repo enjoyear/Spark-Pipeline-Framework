@@ -1,0 +1,8 @@
+site_name: Spark Pipeline Framework
+docs_dir: doc
+pages:
+  - Home: index.md
+  - User Guide:
+    - Configuration: user-guide/configuration.md
+    - Local Submit Steps: user-guide/local-submit-steps.md
+theme: mkdocs
