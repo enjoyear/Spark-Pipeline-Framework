@@ -1,7 +1,7 @@
-#Spark Pipeline Framework
+# Spark Pipeline Framework
 
-##Spark Cluster
-###Configurations
+## Spark Cluster
+### Configurations
 
 * Cluster Configuration
 
@@ -14,10 +14,10 @@
 * Spark Configuration
 Put ONLY spark related configurations here in this section.
 
-##Spark Ingestion
+## Spark Ingestion
 
-###FileIngestionJob
-####Configurations
+### FileIngestionJob
+#### Configurations
 
 * Source
 
