@@ -5,4 +5,4 @@ pages:
   - User Guide:
     - Configuration: user-guide/configuration.md
     - Local Submit Steps: user-guide/local-submit-steps.md
-theme: mkdocs
+theme: readthedocs
