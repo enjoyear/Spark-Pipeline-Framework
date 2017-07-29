@@ -1,0 +1,59 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "Spark Pipeline Framework", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#spark-pipeline-framework", 
+            "text": "", 
+            "title": "Spark Pipeline Framework"
+        }, 
+        {
+            "location": "/user-guide/configuration/", 
+            "text": "Spark Pipeline Framework\n\n\nSpark Cluster\n\n\nConfigurations\n\n\n\n\nCluster Configuration\n\n\n\n\n\n\n\n\n\n\nKey\n\n\nType\n\n\nDefault\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n\n\nmaster\n\n\nstring\n\n\nMandatory\n\n\nSpecify the master URL\n\n\n\n\n\n\n\n\napp_name\n\n\nstring\n\n\nMandatory\n\n\nProvide the spark application name\n\n\n\n\n\n\n\n\nenable_hive_support\n\n\nboolean\n\n\nfalse\n\n\nSpecify whether to load Hive classes for Hive support\n\n\n\n\n\n\n\n\n\n\n\n\nSpark Configuration\nPut ONLY spark related configurations here in this section.\n\n\n\n\nSpark Ingestion\n\n\nFileIngestionJob\n\n\nConfigurations\n\n\n\n\nSource\n\n\n\n\n\n\n\n\n\n\nKey\n\n\nType\n\n\nDefault\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n\n\nlocation\n\n\nstring\n\n\nMandatory\n\n\nProvide the input location\n\n\n\n\n\n\n\n\n\n\n\n\nConverter\n\n\nChecker\n\n\nPublisher\n\n\n\n\n\n\n\n\n\n\nKey\n\n\nType\n\n\nDefault\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n\n\nformat\n\n\nstring\n\n\nMandatory\n\n\nSpecify the output data format.\navro : com.databricks.spark.avro\norc : orc\n\n\n\n\n\n\n\n\nmode\n\n\nenum\noverwrite\nappend\nignore\nerror\n\n\nerror\n\n\nSpecifies the behavior when data or table already exists\noverwrite\n: overwrite the existing data.\nappend\n: append the data.\nignore\n: ignore the operation (i.e. no-op).\nerror\n: default option, throw an exception at runtime.\n\n\n\n\n\n\n\n\nlocation\n\n\nstring\n\n\nMandatory\n\n\nProvide the output location", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/user-guide/configuration/#spark-pipeline-framework", 
+            "text": "", 
+            "title": "Spark Pipeline Framework"
+        }, 
+        {
+            "location": "/user-guide/configuration/#spark-cluster", 
+            "text": "", 
+            "title": "Spark Cluster"
+        }, 
+        {
+            "location": "/user-guide/configuration/#configurations", 
+            "text": "Cluster Configuration      Key  Type  Default  Description       master  string  Mandatory  Specify the master URL     app_name  string  Mandatory  Provide the spark application name     enable_hive_support  boolean  false  Specify whether to load Hive classes for Hive support       Spark Configuration\nPut ONLY spark related configurations here in this section.", 
+            "title": "Configurations"
+        }, 
+        {
+            "location": "/user-guide/configuration/#spark-ingestion", 
+            "text": "", 
+            "title": "Spark Ingestion"
+        }, 
+        {
+            "location": "/user-guide/configuration/#fileingestionjob", 
+            "text": "", 
+            "title": "FileIngestionJob"
+        }, 
+        {
+            "location": "/user-guide/configuration/#configurations_1", 
+            "text": "Source      Key  Type  Default  Description       location  string  Mandatory  Provide the input location       Converter  Checker  Publisher      Key  Type  Default  Description       format  string  Mandatory  Specify the output data format. avro : com.databricks.spark.avro orc : orc     mode  enum overwrite append ignore error  error  Specifies the behavior when data or table already exists overwrite : overwrite the existing data. append : append the data. ignore : ignore the operation (i.e. no-op). error : default option, throw an exception at runtime.     location  string  Mandatory  Provide the output location", 
+            "title": "Configurations"
+        }, 
+        {
+            "location": "/user-guide/local-submit-steps/", 
+            "text": "Steps to submit a spark job locally\n\n\n\n\nMake sure /etc/hosts has an entry for your \nhostname\n as \"127.0.0.1\"\n\n\n\n\nOr temporarily change your hostname by \nsudo hostname -s 127.0.0.1\n\n\n\n\n\n\nSubmit the spark job via spark-submit\n\n\n\n\n\n\nbash\n  spark-submit --class com.chen.guo.example.WordCount \\\n--conf spark.chen.guo.word.count.filepath=file:///Users/chguo/repos/enjoyear/Spark-Pipeline-Framework/spark-ingestion/src/main/resources/com/chen/guo/example/WordCountExampleFile.txt \\\nfile:///Users/chguo/repos/enjoyear/Spark-Pipeline-Framework/spark-ingestion/build/libs/spark-ingestion.jar\n\n3.", 
+            "title": "Local Submit Steps"
+        }, 
+        {
+            "location": "/user-guide/local-submit-steps/#steps-to-submit-a-spark-job-locally", 
+            "text": "Make sure /etc/hosts has an entry for your  hostname  as \"127.0.0.1\"   Or temporarily change your hostname by  sudo hostname -s 127.0.0.1    Submit the spark job via spark-submit    bash\n  spark-submit --class com.chen.guo.example.WordCount \\\n--conf spark.chen.guo.word.count.filepath=file:///Users/chguo/repos/enjoyear/Spark-Pipeline-Framework/spark-ingestion/src/main/resources/com/chen/guo/example/WordCountExampleFile.txt \\\nfile:///Users/chguo/repos/enjoyear/Spark-Pipeline-Framework/spark-ingestion/build/libs/spark-ingestion.jar \n3.", 
+            "title": "Steps to submit a spark job locally"
+        }
+    ]
+}
