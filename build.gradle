@@ -51,6 +51,9 @@ allprojects {
     task integrationTest(type: Test) {
         testClassesDir = sourceSets.integrationTest.output.classesDir
         classpath = sourceSets.integrationTest.runtimeClasspath
+        //Ref: https://www.petrikainulainen.net/programming/gradle/getting-started-with-gradle-integration-testing/
+        //Force integration tests to run every time
+        //outputs.upToDateWhen { false }
     }
 
     test {
@@ -64,4 +67,7 @@ allprojects {
             logger.quiet "==> INTEGRATION TEST ${result.resultType}: ${desc.name} [${desc.className}]"
         }
     }
+
+    check.dependsOn integrationTest
+    integrationTest.mustRunAfter test
 }
