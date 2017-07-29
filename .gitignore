@@ -12,3 +12,4 @@ bin/jars
 metastore_db
 derby.log
 #Hive Related
+site
