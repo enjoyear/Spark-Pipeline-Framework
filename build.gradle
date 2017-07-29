@@ -34,6 +34,11 @@ allprojects {
         }
     }
 
+    configurations {
+        integrationTestCompile.extendsFrom testCompile
+        integrationTestRuntime.extendsFrom testRuntime
+    }
+
     ext.versions = [
             scalaMajorMinorVersion: '2.11',
             sparkVersion          : '2.1.1'
@@ -43,9 +48,20 @@ allprojects {
         testCompile group: 'junit', name: 'junit', version: '4.12'
     }
 
+    task integrationTest(type: Test) {
+        testClassesDir = sourceSets.integrationTest.output.classesDir
+        classpath = sourceSets.integrationTest.runtimeClasspath
+    }
+
     test {
         afterTest { desc, result ->
-            logger.quiet "==> TEST ${result.resultType}: ${desc.name} [${desc.className}]"
+            logger.quiet "==> UNIT TEST ${result.resultType}: ${desc.name} [${desc.className}]"
+        }
+    }
+
+    integrationTest {
+        afterTest { desc, result ->
+            logger.quiet "==> INTEGRATION TEST ${result.resultType}: ${desc.name} [${desc.className}]"
         }
     }
 }
