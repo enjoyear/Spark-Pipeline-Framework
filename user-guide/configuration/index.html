@@ -135,7 +135,6 @@
 <th>Type</th>
 <th>Default</th>
 <th>Description</th>
-<th></th>
 </tr>
 </thead>
 <tbody>
@@ -144,21 +143,18 @@
 <td>string</td>
 <td>Mandatory</td>
 <td>Specify the master URL</td>
-<td></td>
 </tr>
 <tr>
 <td>app_name</td>
 <td>string</td>
 <td>Mandatory</td>
 <td>Provide the spark application name</td>
-<td></td>
 </tr>
 <tr>
 <td>enable_hive_support</td>
 <td>boolean</td>
 <td>false</td>
 <td>Specify whether to load Hive classes for Hive support</td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -179,7 +175,6 @@ Put ONLY spark related configurations here in this section.</li>
 <th>Type</th>
 <th>Default</th>
 <th>Description</th>
-<th></th>
 </tr>
 </thead>
 <tbody>
@@ -188,7 +183,6 @@ Put ONLY spark related configurations here in this section.</li>
 <td>string</td>
 <td>Mandatory</td>
 <td>Provide the input location</td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -204,7 +198,6 @@ Put ONLY spark related configurations here in this section.</li>
 <th>Type</th>
 <th>Default</th>
 <th>Description</th>
-<th></th>
 </tr>
 </thead>
 <tbody>
@@ -213,21 +206,18 @@ Put ONLY spark related configurations here in this section.</li>
 <td>string</td>
 <td>Mandatory</td>
 <td>Specify the output data format.<ul><li>avro : com.databricks.spark.avro</li><li>orc : orc</li></ul></td>
-<td></td>
 </tr>
 <tr>
 <td>mode</td>
 <td>enum<ul><li><code>overwrite</code></li><li><code>append</code></li><li><code>ignore</code></li><li><code>error</code></li></ul></td>
 <td><code>error</code></td>
 <td>Specifies the behavior when data or table already exists<ul><li><code>overwrite</code>: overwrite the existing data.</li><li><code>append</code>: append the data.</li><li><code>ignore</code>: ignore the operation (i.e. no-op).</li><li><code>error</code>: default option, throw an exception at runtime.</li></ul></td>
-<td></td>
 </tr>
 <tr>
 <td>location</td>
 <td>string</td>
 <td>Mandatory</td>
 <td>Provide the output location</td>
-<td></td>
 </tr>
 </tbody>
 </table>
