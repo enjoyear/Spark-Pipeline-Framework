@@ -1,0 +1,8 @@
+val values = List(List("1", "One") ,List("2", "Two") ,List("3", "Three"),List("4","4")).map(x =>(x(0), x(1)))
+import spark.implicits._
+val df = values.toDF
+
+val toInt    = udf[Int, String]( _.toInt)
+val toDouble = udf[Double, String]( _.toDouble)
+
+val featureDf = df.withColumn("_1", toInt(df("_1"))).select("_1", "_2")
