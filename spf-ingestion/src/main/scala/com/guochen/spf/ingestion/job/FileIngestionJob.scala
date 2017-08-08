@@ -25,6 +25,9 @@ class FileIngestionJob(config: Config) extends SparkJob(config) {
     val filePath = source.getString(ConfigurationKeys.SOURCE.LOCATION)
     val fileRdd = ss.sparkContext.textFile(filePath)
     val dataFrame = ss.read.csv(filePath)
+    dataFrame.foreach(r => {
+
+    })
     dataFrame.write
       .format(publisher.getString(ConfigurationKeys.PUBLISHER.FORMAT))
       .mode(publisher.getString(ConfigurationKeys.PUBLISHER.MODE))

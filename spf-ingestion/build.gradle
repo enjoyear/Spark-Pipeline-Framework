@@ -1,3 +1,4 @@
 dependencies {
     compile project(':spf-core')
+    testCompile project(path: ':spf-core', configuration: 'testArtifacts')
 }

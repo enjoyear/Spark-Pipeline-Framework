@@ -29,7 +29,7 @@ class JobLauncher(config: Config) {
   }
 
   def start() {
-    val sparkContext: SparkSession = setupSpark();
+    val sparkContext: SparkSession = setupSpark()
     val jobConfig = config.getConfig(ConfigurationKeys.JOB_ROOT)
     val jobClassName = jobConfig.getString(ConfigurationKeys.KEY_JOB_CLASS)
     val jobClass = Class.forName(jobClassName)
