@@ -7,17 +7,21 @@ import scala.util.{Failure, Success, Try}
   1. Call operate first
   2. Validate. Get error msg if fails
  */
-trait Operation[FROM, TO] {
-  def operate(cell: Any): TO = {
+trait Operation[FROM, TO <: Any] {
+  def operate(cell: Any): OperationResult[TO] = {
+    operate(OperationResult[Any](cell, OperationStatusCode.SUCCESS, ""))
+  }
+
+  def operate(cell: OperationResult[Any]): OperationResult[TO] = {
     Try(cell.asInstanceOf[FROM]) match {
-      case Success(s) => transform(s)
-      case Failure(throwable) => throw throwable
+      case Success(s) => OperationResult(transform(s), OperationStatusCode.SUCCESS, "")
+//      case Failure(throwable) => OperationResult(null, OperationStatusCode.FAILURE, throwable.getMessage)
     }
   }
 
   protected def transform(cell: FROM): TO
 
-  def validate(cell: FROM, transformed: TO): Boolean
+  protected def validate(cell: FROM, transformed: TO): Boolean
 
   //def validationContinuationLevel
 

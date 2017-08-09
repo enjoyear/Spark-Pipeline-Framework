@@ -1,6 +1,5 @@
 package com.guochen.spf.operation
 
-trait OperationResult {
+import com.guochen.spf.operation.OperationStatusCode.OperationStatusCode
 
-}
-
+case class OperationResult[T](result: T, code: OperationStatusCode, msg: String)
