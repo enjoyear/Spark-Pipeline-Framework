@@ -1,6 +1,6 @@
 package com.guochen.spf.operation
 
-import scala.reflect.ClassTag
+import scala.util.{Failure, Success, Try}
 
 /*
   Operation can be chained one after another to perform a series of operations
@@ -8,7 +8,14 @@ import scala.reflect.ClassTag
   2. Validate. Get error msg if fails
  */
 trait Operation[FROM, TO] {
-  def transform(cell: FROM): TO
+  def operate(cell: Any): TO = {
+    Try(cell.asInstanceOf[FROM]) match {
+      case Success(s) => transform(s)
+      case Failure(throwable) => throw throwable
+    }
+  }
+
+  protected def transform(cell: FROM): TO
 
   def validate(cell: FROM, transformed: TO): Boolean
 
@@ -17,8 +24,6 @@ trait Operation[FROM, TO] {
   //  def operate(cell: FROM) = {
   //    //val transformed = transform(cell)
   //  }
-
-  val fromType = implicitly[ClassTag[FROM]].runtimeClass
 }
 
 /*
