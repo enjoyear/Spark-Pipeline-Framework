@@ -4,7 +4,7 @@ import com.guochen.spf.UnitTestSpec
 import org.scalatest.GivenWhenThen
 
 class OperationExitCodeSpec extends UnitTestSpec with GivenWhenThen {
-  behavior of "OperationStatusCode"
+  behavior of "OperationExitCode"
 
   it should "contains all elements" in {
     assert(OperationExitCode.contains("success"))
@@ -13,7 +13,11 @@ class OperationExitCodeSpec extends UnitTestSpec with GivenWhenThen {
   }
 
   it must "maintain order" in {
-    println(OperationExitCode.SUCCESS < OperationExitCode.WARNING)
-    println(OperationExitCode.WARNING < OperationExitCode.FAILURE)
+    assert(OperationExitCode.SUCCESS < OperationExitCode.WARNING)
+    assert(OperationExitCode.WARNING < OperationExitCode.FAILURE)
+  }
+
+  it can "compare" in {
+    assert(OperationExitCode.max(OperationExitCode.SUCCESS, OperationExitCode.WARNING) == OperationExitCode.WARNING)
   }
 }

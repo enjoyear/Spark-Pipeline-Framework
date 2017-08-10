@@ -13,15 +13,10 @@ class OperationSpec extends UnitTestSpec {
     val operations: List[Operation[_, _]] = List(intCast, intRangeChecker)
     val cell = "1"
 
-    process(OperationResult[String](Some(cell), OperationExitCode.SUCCESS, ""), operations)
-  }
-
-  def process(cell: OperationResult[Any], operations: List[Operation[_, _]]): Any = {
-    if (operations.isEmpty)
-      cell
-    else {
-      val operator = operations.head
-      process(operator.operate(cell), operations.tail)
+    var res = operations.head.process(cell)
+    for (operation <- operations.tail) {
+      res = operation.process(res)
     }
+    println(res)
   }
 }
