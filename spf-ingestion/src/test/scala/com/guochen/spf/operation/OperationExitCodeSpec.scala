@@ -18,6 +18,14 @@ class OperationExitCodeSpec extends UnitTestSpec with GivenWhenThen {
   }
 
   it can "compare" in {
-    assert(OperationExitCode.max(OperationExitCode.SUCCESS, OperationExitCode.WARNING) == OperationExitCode.WARNING)
+    assertResult(OperationExitCode.WARNING) {
+      OperationExitCode.max(OperationExitCode.SUCCESS, OperationExitCode.WARNING)
+    }
+  }
+
+  it can "be created from string ignoring case" in {
+    assertResult(OperationExitCode.SUCCESS) {
+      OperationExitCode("SUccess")
+    }
   }
 }

@@ -15,7 +15,30 @@ import scala.util.{Failure, Success, Try}
   * @tparam FROM defines the type for the source of this operation
   * @tparam TO   defines the type for the output of this operation
   */
-trait Operation[FROM, TO] {
+abstract class Operation[FROM, TO](settings: Map[String, String]) {
+
+  import Operation._
+
+  /**
+    * The startLevel defines when this operation can perform.
+    * An operation can start only when previous operation ends with an exitCode <= startLevel.
+    * Otherwise, this operation will skip, so do the following operations.
+    */
+  val startLevel: OperationExitCode = {
+    val startLevel: OperationExitCode = OperationExitCode(settings.getOrElse(ARG_START_LEVEL, "success"))
+    require(startLevel < OperationExitCode.FAILURE)
+    startLevel
+  }
+
+  /**
+    * This exitLevel defines the exit code of a failed validation,
+    * thus impact the following operations.
+    */
+  val validationFailureLevel: OperationExitCode = {
+    val exitLevel: OperationExitCode = OperationExitCode(settings.getOrElse(ARG_VALIDATION_FAILURE_LEVEL, "FAILURE"))
+    exitLevel
+  }
+
   def process(cell: Any): OperationResult[TO] = {
     process(OperationResult[Any](Some(cell), OperationExitCode.SUCCESS, ""))
   }
@@ -44,7 +67,7 @@ trait Operation[FROM, TO] {
             } else {
               //Validation fails
               OperationResult[TO](Some(to),
-                OperationExitCode.max(validationExitLevel, prev.exitCode),
+                OperationExitCode.max(validationFailureLevel, prev.exitCode),
                 appendMessage(prev.msg, s"Failed at ${this.toString}"))
             }
           //This failure is a transform error. Thus always ExitCode.FAILURE
@@ -57,38 +80,31 @@ trait Operation[FROM, TO] {
     }
   }
 
-  /**
-    * The startLevel defines when this operation can perform.
-    * An operation can start only when previous operation ends with an exitCode <= startLevel.
-    * Otherwise, this operation will skip, so do the following operations.
-    */
-  def startLevel: OperationExitCode = OperationExitCode.SUCCESS
 
   protected def transform(cell: FROM): TO
 
   protected def validate(cell: FROM, transformed: TO): Boolean
-
-  /**
-    * This exitLevel defines the exit code of a failed validation,
-    * thus impact the following operations.
-    */
-  def validationExitLevel: OperationExitCode = OperationExitCode.FAILURE
 
   private def appendMessage(prevMsg: String, newMsg: String): String = {
     prevMsg + " | " + newMsg
   }
 }
 
+object Operation {
+  val ARG_START_LEVEL: String = "start_level"
+  val ARG_VALIDATION_FAILURE_LEVEL: String = "validation_failure_level"
+}
+
 /*
   ValidationOperation is doing an identity mapping and perform a validation afterwards
  */
-trait ValidateOperation[T] extends Operation[T, T] {
+abstract class ValidateOperation[T](args: Map[String, String] = Map()) extends Operation[T, T](args) {
   override def transform(cell: T): T = cell
 }
 
 /*
   TransformOperation is doing a transformation and validation is true by default
  */
-trait TransformOperation[FROM, TO] extends Operation[FROM, TO] {
+abstract class TransformOperation[FROM, TO](args: Map[String, String] = Map()) extends Operation[FROM, TO](args) {
   override def validate(cell: FROM, transformed: TO): Boolean = true
 }

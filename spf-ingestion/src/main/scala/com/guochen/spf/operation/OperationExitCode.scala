@@ -13,7 +13,9 @@ object OperationExitCode extends Enumeration {
 
   def contains(code: String): Boolean = Try(values.contains(OperationExitCode(code))).isSuccess
 
-  def apply(code: String): OperationExitCode = withName(code.toUpperCase())
+  def apply(enum: String): OperationExitCode = withNameIgnoreCase(enum)
 
-  def max(code1: OperationExitCode, code2: OperationExitCode) = if (code1 >= code2) code1 else code2
+  def withNameIgnoreCase(enum: String): OperationExitCode = withName(enum.toUpperCase())
+
+  def max(code1: OperationExitCode, code2: OperationExitCode): OperationExitCode = if (code1 >= code2) code1 else code2
 }

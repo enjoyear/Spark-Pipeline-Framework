@@ -7,7 +7,7 @@ import com.guochen.spf.operation.converter.StringToInt
 class OperationSpec extends UnitTestSpec {
   behavior of "A chain of operations"
 
-  it should "work" in {
+  it should "work" ignore {
     val intCast = StringToInt()
     val intRangeChecker = IntRangeChecker(1, 10)
     val operations: List[Operation[_, _]] = List(intCast, intRangeChecker)
@@ -18,5 +18,12 @@ class OperationSpec extends UnitTestSpec {
       res = operation.process(res)
     }
     println(res)
+  }
+
+  behavior of "An operation"
+
+  it should "work" in {
+    val intCast = StringToInt()
+    println(intCast.startLevel)
   }
 }
