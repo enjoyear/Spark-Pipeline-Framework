@@ -33,14 +33,18 @@ abstract class Operation[FROM, TO](settings: Map[String, String]) {
   /**
     * This exitLevel defines the exit code of a failed validation,
     * thus impact the following operations.
+    *
+    * Set this value at a lower level to allow following operations to continue.
+    * E.g. If a validation fails with a WARNING and follow operations having WARNING as start levels,
+    * then all following operations can continue.
     */
   val validationFailureLevel: OperationExitCode = {
     val exitLevel: OperationExitCode = OperationExitCode(settings.getOrElse(ARG_VALIDATION_FAILURE_LEVEL, "FAILURE"))
     exitLevel
   }
 
-  def process(cell: Any): OperationResult[TO] = {
-    process(OperationResult[Any](Some(cell), OperationExitCode.SUCCESS, ""))
+  def process(input: Any): OperationResult[TO] = {
+    process(OperationResult[Any](Some(input), OperationExitCode.SUCCESS, ""))
   }
 
   def process(prev: OperationResult[Any]): OperationResult[TO] = {
@@ -55,7 +59,7 @@ abstract class Operation[FROM, TO](settings: Map[String, String]) {
     }
 
     if (prev.result.isEmpty) {
-      throw new RuntimeException("This is impossible. All cases have been handled.")
+      throw new RuntimeException(s"Unable to proceed for ${this} because previous operation returns empty result.")
     }
 
     Try(prev.result.get.asInstanceOf[FROM]) match {
@@ -66,7 +70,7 @@ abstract class Operation[FROM, TO](settings: Map[String, String]) {
               OperationResult[TO](Some(to), prev.exitCode, prev.msg)
             } else {
               //Validation fails
-              OperationResult[TO](None,
+              OperationResult[TO](Some(to),
                 OperationExitCode.max(validationFailureLevel, prev.exitCode),
                 appendMessage(prev.msg, s"${this} validation failed for ${to}"))
             }
@@ -81,9 +85,9 @@ abstract class Operation[FROM, TO](settings: Map[String, String]) {
   }
 
 
-  protected def transform(cell: FROM): TO
+  protected def transform(input: FROM): TO
 
-  protected def validate(cell: FROM, transformed: TO): Boolean
+  protected def validate(input: FROM, transformed: TO): Boolean
 
   private def appendMessage(prevMsg: String, newMsg: String): String = {
     if (prevMsg.isEmpty)
@@ -112,8 +116,8 @@ object Operation {
   * @param args the args map
   * @tparam T the FROM and TO should have the same type for validation operation
   */
-abstract class ValidateOperation[T](args: Map[String, String] = Map()) extends Operation[T, T](args) {
-  override def transform(cell: T): T = cell
+abstract class ValidateOperation[T](args: Map[String, String]) extends Operation[T, T](args) {
+  override final def transform(input: T): T = input
 }
 
 /**
@@ -123,6 +127,6 @@ abstract class ValidateOperation[T](args: Map[String, String] = Map()) extends O
   * @tparam FROM defines the type for the source of this operation
   * @tparam TO   defines the type for the output of this operation
   */
-abstract class TransformOperation[FROM, TO](args: Map[String, String] = Map()) extends Operation[FROM, TO](args) {
-  override def validate(cell: FROM, transformed: TO): Boolean = true
+abstract class TransformOperation[FROM, TO](args: Map[String, String]) extends Operation[FROM, TO](args) {
+  override final def validate(input: FROM, transformed: TO): Boolean = true
 }

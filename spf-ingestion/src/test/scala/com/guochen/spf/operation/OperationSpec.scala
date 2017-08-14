@@ -41,17 +41,30 @@ class OperationSpec extends UnitTestSpec {
     val intCast = StringToInt()
     val intRangeChecker = IntRangeChecker(2, 5)
     val opResult = Operation.process("1", List(intCast, intRangeChecker))
-    assertResult(OperationResult[Int](None, OperationExitCode.FAILURE, "IntRangeChecker(2,5) validation failed for 1", shouldStop = false)) {
+    assertResult(OperationResult[Int](Some(1), OperationExitCode.FAILURE, "IntRangeChecker(2,5,Map()) validation failed for 1", shouldStop = false)) {
       opResult
     }
   }
 
-  it should "have correct result when cast fails" in {
+  it should "have correct result when transformation fails" in {
     val intCast = StringToInt()
     val intRangeChecker1 = IntRangeChecker(1, 5)
     val intRangeChecker2 = IntRangeChecker(0, 10)
     val opResult = Operation.process("hi", List(intCast, intRangeChecker1, intRangeChecker2))
-    assertResult(OperationResult[Int](None, OperationExitCode.FAILURE, "Transformation StringToInt(Map()) failed: For input string: \"hi\" | Stopped at IntRangeChecker(1,5)", shouldStop = true)) {
+    assertResult(OperationResult[Int](None, OperationExitCode.FAILURE, "Transformation StringToInt(Map()) failed: For input string: \"hi\" | Stopped at IntRangeChecker(1,5,Map())", shouldStop = true)) {
+      opResult
+    }
+  }
+
+  it should "have correct result when validation fails with a continuable level" in {
+    val intCast = StringToInt()
+    val intRangeChecker1 = IntRangeChecker(1, 5, args = Map(Operation.ARG_VALIDATION_FAILURE_LEVEL -> "warning"))
+    val intRangeChecker2 = IntRangeChecker(0, 10, args = Map(Operation.ARG_START_LEVEL -> "warning"))
+    val opResult = Operation.process("8", List(intCast, intRangeChecker1, intRangeChecker2,
+      new TransformOperation[Int, Int](Map(Operation.ARG_START_LEVEL -> "warning")) {
+        override protected def transform(input: Int): Int = input + 10
+      }))
+    assertResult(OperationResult[Int](Some(18), OperationExitCode.WARNING, "IntRangeChecker(1,5,Map(validation_failure_level -> warning)) validation failed for 8", shouldStop = false)) {
       opResult
     }
   }
