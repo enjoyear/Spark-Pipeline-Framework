@@ -66,17 +66,17 @@ abstract class Operation[FROM, TO](settings: Map[String, String]) {
               OperationResult[TO](Some(to), prev.exitCode, prev.msg)
             } else {
               //Validation fails
-              OperationResult[TO](Some(to),
+              OperationResult[TO](None,
                 OperationExitCode.max(validationFailureLevel, prev.exitCode),
-                appendMessage(prev.msg, s"Failed at ${this.toString}"))
+                appendMessage(prev.msg, s"${this} validation failed for ${to}"))
             }
           //This failure is a transform error. Thus always ExitCode.FAILURE
           case Failure(throwable) => OperationResult[TO](None, OperationExitCode.FAILURE,
-            appendMessage(prev.msg, throwable.getMessage))
+            appendMessage(prev.msg, s"Transformation ${this} failed: " + throwable.getMessage))
         }
       //This failure is an input casting error. Thus always ExitCode.FAILURE
       case Failure(throwable) => OperationResult[TO](None, OperationExitCode.FAILURE,
-        appendMessage(prev.msg, throwable.getMessage))
+        appendMessage(prev.msg, s"Input cast failed for ${this}: " + throwable.getMessage))
     }
   }
 
@@ -86,13 +86,24 @@ abstract class Operation[FROM, TO](settings: Map[String, String]) {
   protected def validate(cell: FROM, transformed: TO): Boolean
 
   private def appendMessage(prevMsg: String, newMsg: String): String = {
-    prevMsg + " | " + newMsg
+    if (prevMsg.isEmpty)
+      newMsg
+    else
+      prevMsg + " | " + newMsg
   }
 }
 
 object Operation {
   val ARG_START_LEVEL: String = "start_level"
   val ARG_VALIDATION_FAILURE_LEVEL: String = "validation_failure_level"
+
+  def process(start: Any, operations: List[Operation[_, _]]): OperationResult[_] = {
+    var res = operations.head.process(start)
+    for (operation <- operations.tail) {
+      res = operation.process(res)
+    }
+    res
+  }
 }
 
 /**
