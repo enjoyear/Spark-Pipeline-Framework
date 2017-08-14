@@ -20,10 +20,24 @@ class OperationSpec extends UnitTestSpec {
     println(res)
   }
 
-  behavior of "An operation"
+  behavior of "Operation constructor"
 
-  it should "work" in {
-    val intCast = StringToInt()
-    println(intCast.startLevel)
+  it should "accept a map" in {
+    val intCast = StringToInt(Map(Operation.ARG_START_LEVEL -> "warning"))
+
+    assertResult(OperationExitCode.WARNING) {
+      intCast.startLevel
+    }
+
+    assertResult(OperationExitCode.FAILURE) {
+      //The default validationFailureLevel should be FAILURE
+      intCast.validationFailureLevel
+    }
+  }
+
+  it can "not allow FAILURE as a start level" in {
+    assertThrows[IllegalArgumentException] {
+      StringToInt(Map(Operation.ARG_START_LEVEL -> "failure"))
+    }
   }
 }

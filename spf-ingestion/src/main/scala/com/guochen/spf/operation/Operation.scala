@@ -26,7 +26,7 @@ abstract class Operation[FROM, TO](settings: Map[String, String]) {
     */
   val startLevel: OperationExitCode = {
     val startLevel: OperationExitCode = OperationExitCode(settings.getOrElse(ARG_START_LEVEL, "success"))
-    require(startLevel < OperationExitCode.FAILURE)
+    require(startLevel < OperationExitCode.FAILURE, "Operation start level must be less than FAILURE")
     startLevel
   }
 
@@ -95,16 +95,23 @@ object Operation {
   val ARG_VALIDATION_FAILURE_LEVEL: String = "validation_failure_level"
 }
 
-/*
-  ValidationOperation is doing an identity mapping and perform a validation afterwards
- */
+/**
+  * ValidationOperation is doing an identity mapping and perform a validation afterwards
+  *
+  * @param args the args map
+  * @tparam T the FROM and TO should have the same type for validation operation
+  */
 abstract class ValidateOperation[T](args: Map[String, String] = Map()) extends Operation[T, T](args) {
   override def transform(cell: T): T = cell
 }
 
-/*
-  TransformOperation is doing a transformation and validation is true by default
- */
+/**
+  * TransformOperation is doing a transformation and validation is true by default
+  *
+  * @param args the args map
+  * @tparam FROM defines the type for the source of this operation
+  * @tparam TO   defines the type for the output of this operation
+  */
 abstract class TransformOperation[FROM, TO](args: Map[String, String] = Map()) extends Operation[FROM, TO](args) {
   override def validate(cell: FROM, transformed: TO): Boolean = true
 }
