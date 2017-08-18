@@ -3,3 +3,5 @@ rootProject.name = 'spark-pipeline-framework'
 include 'spf-core'
 include 'spf-runtime'
 include 'spf-ingestion'
+
+include 'test-spark-kafka'
