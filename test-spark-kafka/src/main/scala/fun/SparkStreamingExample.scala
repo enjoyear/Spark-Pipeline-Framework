@@ -14,6 +14,8 @@ object SparkStreamingExample extends App {
   // Create a DStream that will connect to localhost:9999
   // Establish a socket stream on top of D-Streams that reads line by line, every 10 seconds.
   val lines = ssc.socketTextStream("localhost", 9999)
+  // lines is an input DStream as it represents the stream of data received from the netcat server
+  // Every input DStream (except file stream) is associated with a Receiver object which receives the data from a source and stores it in Spark’s memory for processing.
 
   val words = lines.flatMap(_.split(" "))
   val pairs = words.map(word => (word, 1))

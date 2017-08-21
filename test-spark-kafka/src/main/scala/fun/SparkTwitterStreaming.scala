@@ -6,7 +6,10 @@ import org.apache.spark.SparkConf
 import org.apache.spark.streaming.twitter.TwitterUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
-
+/**
+  * Spark Streaming Programming Guide
+  * https://spark.apache.org/docs/latest/streaming-programming-guide.html#overview
+  */
 object SparkTwitterStreaming extends App {
   private val props = new Properties
   private val configStream = getClass.getResourceAsStream("/twitter.conf")
@@ -20,13 +23,13 @@ object SparkTwitterStreaming extends App {
   System.setProperty("twitter4j.oauth.accessTokenSecret", props.getProperty("accessTokenSecret"))
 
   // Make sure to set master to local mode with at least 2 threads
-  // 1 thread is used for collecting the incoming streams
-  // another thread for processing it
+  // 1 thread is used for collecting the incoming streams (receiver thread)
+  // another thread for processing input stream
   val sparkConf = new SparkConf().setMaster("local[4]").setAppName("TwitterStream")
   // Set the Spark StreamingContext to create a DStream for every 10 seconds
   val ssc = new StreamingContext(sparkConf, Seconds(10))
 
-  val stream = TwitterUtils.createStream(ssc, None, Seq("hi"))
+  val stream = TwitterUtils.createStream(ssc, None, Seq("iPhone"))
   val hashTags = stream.flatMap(status => status.getText.split(" ").filter(_.startsWith("#")))
 
   // Get the top hashtags over the previous 60 sec window
