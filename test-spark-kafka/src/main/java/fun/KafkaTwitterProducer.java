@@ -23,6 +23,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Access App: https://apps.twitter.com/
  */
 public class KafkaTwitterProducer {
+  public final static String TOPIC_NAME = "test-topic";
+
   public static void main(String[] args) throws Exception {
     Properties credentialProps = new Properties();
     InputStream configStream = KafkaTwitterProducer.class.getResourceAsStream("/twitter.conf");
@@ -70,7 +72,7 @@ public class KafkaTwitterProducer {
         for (HashtagEntity hashtage : ret.getHashtagEntities()) {
           System.out.println("Tweet:" + ret);
           System.out.println("Hashtag: " + hashtage.getText());
-          producer.send(new ProducerRecord<>("test-topic", Integer.toString(j++), ret.getText()));
+          producer.send(new ProducerRecord<>(TOPIC_NAME, Integer.toString(j++), ret.getText()));
         }
       }
     }
