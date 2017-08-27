@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
  * 2. Create a kafka topic: bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test-topic
  * 3. Start a kafka producer: bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test-topic
  */
-public class KafkaConsumer {
+public class KafkaConsumer08 {
   public static void main(String[] args) throws Exception {
     Properties kafkaConf = getProperties();
 
@@ -40,7 +40,7 @@ public class KafkaConsumer {
     ExecutorService executor = Executors.newFixedThreadPool(threadCount);
     int threadNumber = 0;
     for (final KafkaStream<byte[], byte[]> stream : streams) {
-      executor.submit(new MyConsumer(stream, threadNumber++));
+      executor.submit(new Consumer08Runnable(stream, threadNumber++));
     }
     //consumer.shutdown();
   }
@@ -60,20 +60,20 @@ public class KafkaConsumer {
     props.put("auto.commit.interval.ms", "1000");
     return props;
   }
-}
 
-class MyConsumer implements Runnable {
-  private KafkaStream<byte[], byte[]> stream;
-  private int threadNumber;
+  static class Consumer08Runnable implements Runnable {
+    private KafkaStream<byte[], byte[]> stream;
+    private int threadNumber;
 
-  MyConsumer(KafkaStream<byte[], byte[]> stream, int threadNumber) {
-    this.stream = stream;
-    this.threadNumber = threadNumber;
-  }
+    Consumer08Runnable(KafkaStream<byte[], byte[]> stream, int threadNumber) {
+      this.stream = stream;
+      this.threadNumber = threadNumber;
+    }
 
-  public void run() {
-    for (MessageAndMetadata<byte[], byte[]> aStream : stream)
-      System.out.println("Thread " + threadNumber + ": " + new String(aStream.message()));
-    System.out.println("Shutting down Thread: " + threadNumber);
+    public void run() {
+      for (MessageAndMetadata<byte[], byte[]> aStream : stream)
+        System.out.println("Thread " + threadNumber + ": " + new String(aStream.message()));
+      System.out.println("Shutting down Thread: " + threadNumber);
+    }
   }
 }
