@@ -3,8 +3,10 @@ package fun;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,6 +32,7 @@ public class KafkaConsumer11 {
       props.put("bootstrap.servers", "localhost:9092");
       props.put("group.id", "consumer-group-1");
       //Automatic Offset Committing
+      //Instead of relying on the consumer to periodically commit consumed offsets, users can also control when records should be considered as consumed and hence commit their offsets. This is useful when the consumption of the messages is coupled with some processing logic and hence a message should not be considered as consumed until it is completed processing.
       props.put("enable.auto.commit", "true");
       props.put("auto.commit.interval.ms", "1000");
       //The deserializer settings specify how to turn bytes into objects
@@ -39,6 +42,10 @@ public class KafkaConsumer11 {
       props.put("session.timeout.ms", "30000");
 
       consumer = new KafkaConsumer<>(props);
+
+      //Instead of subscribing to the topic using subscribe, you just call assign(Collection) with the full list of partitions that you want to consume for Manual Partition Assignment
+      //Manual partition assignment does NOT use group coordination, so consumer failures will not cause assigned partitions to be rebalanced. Each consumer acts INDEPENDENTLY EVEN IF it shares a groupId with another consumer. To avoid offset commit conflicts, you should usually ENSURE that the GROUPID IS UNIQUE for EACH consumer instance.
+      //Note that!!! it isn't possible to mix manual partition assignment (i.e. using assign) with dynamic partition assignment through topic subscription (i.e. using subscribe).
       consumer.subscribe(Collections.singletonList(topic));
     }
 
@@ -47,9 +54,16 @@ public class KafkaConsumer11 {
         while (true) {
           ConsumerRecords<String, String> records = consumer.poll(10000L);
           System.out.println("Partition Assignment to this Consumer: " + consumer.assignment());
+          for (TopicPartition partition : records.partitions()) {
+            List<ConsumerRecord<String, String>> partitionRecords = records.records(partition);
+            //We can do something by partition
+          }
+
           for (ConsumerRecord<String, String> record : records) {
-            System.out.printf("Received @thread '%s': offset=%d, <%s, %s>%n",
-                Thread.currentThread().getName(), record.offset(), record.key(), record.value());
+            System.out.printf("Thread=%s, partition=%d: offset=%d, <%s, %s>%n",
+                Thread.currentThread().getName(),
+                record.partition(), record.offset(),
+                record.key(), record.value());
           }
         }
       } catch (Exception e) {
