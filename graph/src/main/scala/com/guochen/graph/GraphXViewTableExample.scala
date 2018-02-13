@@ -4,8 +4,10 @@ import org.apache.spark.graphx.{Edge, EdgeDirection, Graph, VertexId}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 import org.graphframes.GraphFrame
+import org.slf4j.LoggerFactory
 
 object GraphXViewTableExample extends App {
+  val logger = LoggerFactory.getLogger(GraphXViewTableExample.getClass)
 
   val sessionBuilder = SparkSession
     .builder()
@@ -20,24 +22,27 @@ object GraphXViewTableExample extends App {
 
   val propagateViews = g.pregel[Set[String]](Set[String](), Int.MaxValue, EdgeDirection.Out)(
     (destId, destAttr, message) => {
-      if (destAttr.kind == "T")
-        DataSetNode(destAttr.name, destAttr.kind, message)
-      else {
-        DataSetNode(destAttr.name, destAttr.kind, message + destAttr.name)
-      }
+      logger.info(s"Chen: Receive $message at ${destAttr}")
+      DataSetNode(destAttr.name, destAttr.kind, message)
     },
     triplet => {
-      if (triplet.dstAttr.kind == "T")
-        Iterator.empty //No more recursion if reach a Table
-      else if (triplet.attr.relationship == "PARSING_ERROR")
-        Iterator.empty //No more recursion if relationship is PARSING_ERROR
+      logger.info(s"Chen: Send message for edge with Src(${triplet.srcAttr}) and Dest(${triplet.dstAttr})")
+      if (triplet.attr.relationship == "PARSING_ERROR" || //Do NOT send message if relationship is PARSING_ERROR
+        triplet.srcAttr.kind == "T") //Do NOT send message if src is table
+        Iterator.empty
       else
-        Iterator((triplet.dstId, triplet.srcAttr.parents))
+        Iterator((triplet.dstId, triplet.srcAttr.parents + triplet.srcAttr.name))
     },
-    (set1, set2) => set1 ++ set2
+    (set1, set2) => {
+      logger.info(s"Chen: Merging set ${set1}) with ${set2}")
+      set1 ++ set2
+    }
   )
 
-  propagateViews.vertices.collect.foreach(println)
+  println("Table Views: ")
+  propagateViews.vertices
+    .filter(node => node._2.kind == "T")
+    .collect.foreach(println)
 
   private def createGraph(): Graph[DataSetNode, Relationship] = {
     val v = sqlContext.createDataFrame(List(
@@ -61,7 +66,7 @@ object GraphXViewTableExample extends App {
 
     val typedVertices: RDD[(VertexId, DataSetNode)] = g.vertices.map(x => (
       x._1,
-      DataSetNode(x._2.getString(0), x._2.getString(1), Set("Should Be Overwritten"))
+      DataSetNode(x._2.getString(0), x._2.getString(1), null)
     ))
 
     val typedEdges: RDD[Edge[Relationship]] = g.edges.map(x => Edge(
