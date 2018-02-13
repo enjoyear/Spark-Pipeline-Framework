@@ -20,6 +20,10 @@ object GraphXViewTableExample extends App {
 
   val g: Graph[DataSetNode, Relationship] = createGraph()
 
+  val tableDependencies: RDD[(String, String, String)] = g.triplets
+    .filter(x => x.srcAttr.kind == "T" && x.dstAttr.kind == "T")
+    .map(triplet => (triplet.srcAttr.name, triplet.attr.relationship, triplet.dstAttr.name))
+
   val propagateViews = g.pregel[Set[String]](Set[String](), Int.MaxValue, EdgeDirection.Out)(
     (destId, destAttr, message) => {
       logger.info(s"Chen: Receive $message at ${destAttr}")
@@ -39,13 +43,18 @@ object GraphXViewTableExample extends App {
     }
   )
 
-  println("Table Views: ")
-  propagateViews.vertices
+  val viewDependencies: RDD[(String, String, String)] = propagateViews.vertices
     .filter(node => node._2.kind == "T")
-    .collect.foreach(println)
+    .flatMap(v => v._2.parents.map(p => (p, "DEPEND_ON", v._2.name)))
+
+  val dependencies = tableDependencies.union(viewDependencies)
+
+  println("Dependencies: ")
+  dependencies.collect().foreach(println)
 
   private def createGraph(): Graph[DataSetNode, Relationship] = {
     val v = sqlContext.createDataFrame(List(
+      ("table_base", "T"),
       ("table1", "T"),
       ("table2", "T"),
       ("view1", "V"),
@@ -54,6 +63,8 @@ object GraphXViewTableExample extends App {
     )).toDF("id", "type")
     // Edge DataFrame
     val e = sqlContext.createDataFrame(List(
+      ("table1", "table_base", "DEPEND_ON"),
+      ("table2", "table_base", "DEPEND_ON"),
       ("view1", "table1", "DEPEND_ON"),
       ("view2", "table2", "DEPEND_ON"),
       ("view", "view1", "DEPEND_ON"),
