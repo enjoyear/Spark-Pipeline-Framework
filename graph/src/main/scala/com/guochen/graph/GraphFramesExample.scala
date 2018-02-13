@@ -1,9 +1,10 @@
 package com.guochen.graph
 
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions._
 import org.graphframes.GraphFrame
 
-object Graph extends App {
+object GraphFramesExample extends App {
 
   val sessionBuilder = SparkSession
     .builder()
@@ -75,5 +76,13 @@ object Graph extends App {
   // g.shortestPaths.landmarks(Seq("a", "d")).run().show
 
   // Example: Triangle Count
-  g.triangleCount.run().show()
+  // g.triangleCount.run().show()
+
+  val AM = org.graphframes.lib.AggregateMessages
+
+  val agg = g.aggregateMessages
+    //.sendToSrc(AM.dst("age")) // send destination user's age to source
+    .sendToDst(AM.src("age")) // send source user's age to destination
+    .agg(sum(AM.msg).as("summedAges")) // sum up ages, stored in AM.msg column
+  agg.show()
 }
