@@ -1,0 +1,43 @@
+{
+  description: "test ingestion flow"
+  sortColumns: ["a", "b"]
+  deltaColumns: ["last_modified"]
+  distributeColumns: ["x", "y"]
+  schemaOverrides: [
+    {
+      columnName: "source column name"
+      derivedColumnName: "derived column name"
+      type: "timestamp"
+      udf: "class-path"
+      comment: "comment"
+    }
+  ]
+  derivedColumns: [
+    {
+      columnName: "source1"
+      type: "bad_type"
+      udf: "full.class.path"
+    },
+    {
+      columnName: "source2"
+    }
+  ]
+
+  numOfBuckets: 1000
+
+  bootstrap: {
+    source: "db_name$source_table"
+  }
+
+  outputTable: "dali://db_name.output_table"
+  outputHdfs: "the HDFS location for the output_table"
+
+  kafka: {
+    topic: "ds_orcl_OMS_ORDER_LINE_ITEMS_20180726103938"
+    groupId: "Spark_kafka_test"
+    bootstrapServers: "ltx1-kafka-kafka-kac-vip.stg.linkedin.com:16637$ltx1-kafka-kafka-kac-vip.stg.linkedin.com:166327"
+    schemaRegistryUrl: "http://ltx1-schemaregistry-vip-2.stg.linkedin.com:10252/schemaRegistry/schemas"
+    clientId: "DWH_Spark_Kafka_Driver"
+    brooklinDatastream: "brooklin-orcl-OMS.ORDER_LINE_ITEMS"
+  }
+}

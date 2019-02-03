@@ -1,0 +1,29 @@
+{
+  description: "test ingestion flow"
+  sortColumns: ["a", "b"]
+  deltaColumns: ["last_modified"]
+  distributeColumns: ["x", "y"]
+  schemaOverrides: [
+    {
+      columnName: "source column name"
+      derived1ColumnName: "derived column name"
+    }
+  ]
+
+  numOfBuckets: 1000
+
+  bootstrap: {
+    source: "db_name.source_table"
+  }
+
+  outputTable: "chenguo:///db_name.output_table"
+  outputHdfs: "the HDFS location for the output_table"
+
+  kafka: {
+    topic: "topic"
+    groupId: "Spark_kafka_test"
+    bootstrapServers: "bootstrap-servers.stg.chenguo.com:16637$bootstrap-servers.stg.chenguo.com:166327"
+    schemaRegistryUrl: "http://schemaReg.chenguo.com:10252/schemaRegistry/schemas"
+    clientId: "client"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  sortColumns: ["order_id"]       // the columns which output table will be sorted by, this is a superset of unique columns(PK), which should be positioned last
+  deltaColumns: ["gg_modi_ts"]   // the columns based on which table merger decides to keep as latest version
+  distributeColumns: ["order_id"] // the columns which output table will be distributed by
+  schemaOverrides: [
+    {"columnName": "order_id", "type": "bigint", "comment": "PK", "collectStats": true}
+    {"columnName": "member_id", "type": "bigint", "comment": "FK:DIM_MEMBER", "collectStats": true}
+  ]
+  derivedColumns: [
+    {
+      "columnName": "date_created",
+      "derivedColumnName": "order_date",
+      "type": "date", "udf": "from_unixtime"
+    }
+  ]
+  numOfBuckets: 256
+
+  bootstrap: {
+    source: "chenguo:///db.table"
+  }
+
+  outputTable: "dev.table"      //the source table to be converted to bucketed-and-sorted table
+  outputHdfs: "hdfs:///jobs/orders"
+  kafka: {
+    topic: "topic"
+    groupId: "group"
+    bootstrapServers: "host.com:16637" //Provide a string(not a type) of servers separated by comma
+    schemaRegistryUrl: "http://host:1234"
+  }
+}

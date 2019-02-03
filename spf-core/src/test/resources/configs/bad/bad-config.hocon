@@ -1,0 +1,42 @@
+{
+  description: "test ingestion flow"
+  sortColumns: ["a", "b"]
+  deltaColumns: ["last_modified"]
+  distributeColumns: ["x", "y"]
+  schemaOverrides: [
+    {
+      columnName: "source column name"
+      derivedColumnName: "derived column name"
+      type: "timestamp"
+      udf: "class-path"
+      comment: "comment"
+    }
+  ]
+  derivedColumns: [
+    {
+      columnName: "source1"
+      type: "bad_type"
+      udf: "full.class.path"
+    },
+    {
+      columnName: "source2"
+    }
+  ]
+
+  numOfBuckets: 1000
+
+  bootstrap: {
+    source: "db_name$source_table"
+  }
+
+  outputTable: "dali://db_name.output_table"
+  outputHdfs: "the HDFS location for the output_table"
+
+  kafka: {
+    topic: "topic1"
+    groupId: "Spark_kafka_test"
+    bootstrapServers: "bootstrap-servers.stg.chenguo.com:16637$bootstrap-servers.stg.chenguo.com:166327"
+    schemaRegistryUrl: "http://schemaReg.chenguo.com:10252/schemaRegistry/schemas"
+    clientId: "clientId"
+  }
+}
