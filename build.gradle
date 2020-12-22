@@ -47,12 +47,12 @@ allprojects {
 
     ext.versions = [
             scalaMajorMinorVersion: '2.11',
-            sparkVersion          : '2.2.0'
+            sparkVersion          : '2.4.7'
     ]
 
     dependencies {
         compile 'org.scala-lang:scala-library:' + versions.scalaMajorMinorVersion + '.11'
-        compile 'org.slf4j:slf4j-api:1.7.25'
+        compile 'org.slf4j:slf4j-api:1.7.30'
         testCompile group: 'junit', name: 'junit', version: '4.12'
         testCompile 'org.scalatest:scalatest_' + versions.scalaMajorMinorVersion + ':3.0.3'
     }
